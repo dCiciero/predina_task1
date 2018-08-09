@@ -22,34 +22,24 @@ function loadCoord() {
             console.log("Amount loaded: " + evt.loaded)
         })
         .get(function(data) {
-            console.timeEnd("totalTime:");
             coordinates = data;
-            console.log(data.length);
         });
     
 }
 
 loadCoord();
+
 setTimeout(() => {
     recordToLoad = 10;
     coordinates.forEach(element => {
         while (recordToLoad > 0) {
-            console.log(element);
-            console.log(element.Latitude);
-            console.log(recordToLoad);
-            latlng.push(parseFloat(element.Latitude));
-            latlng.push(parseFloat(element.Longitude));
+            latlng[0] = (parseFloat(element.Latitude));
+            latlng[1] = (parseFloat(element.Longitude));
+            displayCoord(latlng);
             recordToLoad--
             break;
         }
     });
-    setInterval(() => {
-        latlng.forEach(element => {
-            display[0] = parseFloat(element.Latitude);
-            display[1] = parseFloat(element.Longitude);
-            displayCoord(display)
-        });
-    },1000)
     
 }, 5000);
 
