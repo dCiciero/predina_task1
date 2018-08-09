@@ -1,27 +1,68 @@
 var access_token = "pk.eyJ1Ijoib2djaWNlcm8iLCJhIjoiY2prazk2bDFlMTloeDN2cGs0OWdnZ3M3dCJ9.TjHJEC7jposIe4SV254wJA"
-var map = L.map('map').setView([51.496842,-0.16882], 13);
+var map = L.map('map', {
+    center: [55.310151,-3.4483919999999997],
+    preferCanvas: false,
+    zoomControl: true,
+    zoom: 13
+}).setView([51.496842,-0.16882], 13);
 
 L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${access_token}`, {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    id: 'mapbox.light',
+    id: 'mapbox.streets',
     accessToken: `${access_token}`
 }).addTo(map);
-let coordinates = [];
+let latlng = display = coordinates = [];
+let recordToLoad = 0;
 let signal;
 
-// loadCoord(10);
+function loadCoord() {
+    console.time("totalTime:");
+    d3.csv("data/Coordinates.csv")
+        .on("progress", function(evt) {
+            console.log("Amount loaded: " + evt.loaded)
+        })
+        .get(function(data) {
+            console.timeEnd("totalTime:");
+            coordinates = data;
+            console.log(data.length);
+        });
+    
+}
 
-setInterval(() => {
-    loadCoord(10);
-},1000)
+loadCoord();
+setTimeout(() => {
+    recordToLoad = 10;
+    coordinates.forEach(element => {
+        while (recordToLoad > 0) {
+            console.log(element);
+            console.log(element.Latitude);
+            console.log(recordToLoad);
+            latlng.push(parseFloat(element.Latitude));
+            latlng.push(parseFloat(element.Longitude));
+            recordToLoad--
+            break;
+        }
+    });
+    setInterval(() => {
+        latlng.forEach(element => {
+            display[0] = parseFloat(element.Latitude);
+            display[1] = parseFloat(element.Longitude);
+            displayCoord(display)
+        });
+    },1000)
+    
+}, 5000);
+
+
 
 function heatCode() {
     var code = Math.round(Math.random() * 10) + 1;
-     return code > 7 ? '#ff0000':
-            code > 5 ? '#ffff00':
-            code > 3 ? '#ffff00':
-                       '#008000';
+     return code> 8 ? '#ff0000':
+            code> 6 ? '#ff7802':
+            code> 4 ? '#fff200':
+                      '#027025';
 }
+
 function displayCoord(coordinates) {
     signal = heatCode();
     L.circle(coordinates, {
@@ -32,15 +73,3 @@ function displayCoord(coordinates) {
     }).addTo(map); 
 }
 
-function loadCoord(numberOfCordinates) {
-    d3.csv("data/Coordinates.csv", function (data) {
-        while (numberOfCordinates > 0) {
-            let entry = Object.values(data);
-            coordinates[0] = parseFloat(entry[0]);
-            coordinates[1] = parseFloat(entry[1]); 
-            displayCoord(coordinates);               
-            numberOfCordinates--;
-            break;
-        };
-    });
-}
