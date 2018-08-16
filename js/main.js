@@ -8,7 +8,7 @@ L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=$
 }).addTo(map);
 let latlng = [], display = [], coordinates = [];
 let recordToLoad = 0;
-let maxRecord = 10;
+let maxRecord = 500;
 let signal;
 function loadCoord() {
     console.time("totalTime:");
