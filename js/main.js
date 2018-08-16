@@ -8,7 +8,7 @@ L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=$
 }).addTo(map);
 let latlng = [], display = [], coordinates = [];
 let recordToLoad = 0;
-let maxRecord = 500;
+let maxRecord = 50;
 let signal;
 function loadCoord() {
     console.time("totalTime:");
@@ -48,10 +48,10 @@ function heatCode() {
 }
 function displayCoord(coordinates) {
     signal = heatCode();
-    L.circle(coordinates, {
+    L.map(coordinates, {
         stroke: false,
         fillColor: signal,
-        fillOpacity: 0.8,
+        fillOpacity: 0.2,
         radius: 300
     }).addTo(map); 
 }
