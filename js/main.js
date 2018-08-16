@@ -41,7 +41,7 @@ function displayCoord(coordinates) {
     L.circle(coordinates, {
         stroke: false,
         fillColor: signal,
-        fillOpacity: 0.1,
+        fillOpacity: 0.02,
         radius: 30
     }).addTo(map); 
 }
