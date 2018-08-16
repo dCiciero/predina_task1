@@ -8,36 +8,26 @@ L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=$
 }).addTo(map);
 let latlng = [], display = [], coordinates = [];
 let recordToLoad = 0;
-let maxRecord = 50;
+let maxRecord = 50000;
 let signal;
+
 function loadCoord() {
-    console.time("totalTime:");
-    d3.csv("data/Coordinates.csv", (e) => {
-        return{
-            Latitude: parseFloat(e.Latitude),
-            Longitude: +e.Longitude
-        };
-    }, (d) => {
+    d3.csv("data/Coordinates.csv", (d) => {
         while (recordToLoad < maxRecord) {
             let values = Object.values(d)
             latlng[0] = parseFloat(values[0]);
             latlng[1] = parseFloat(values[1]);
             display.push(values);
             displayCoord(latlng);
-            recordToLoad++
+            recordToLoad = Math.round(Math.random() * maxRecord);
             break;
         }
         
     });
-    setTimeout(() => {
+}
 
-    }, 200);
-        
-    setInterval(()=>{
-        display.forEach(e => {
-            displayCoord(e);
-        });
-    }, 1000)
+function getRandCoord(){
+
 }
 function heatCode() {
     var code = Math.round(Math.random() * 10) + 1;
@@ -48,14 +38,18 @@ function heatCode() {
 }
 function displayCoord(coordinates) {
     signal = heatCode();
-    L.map(coordinates, {
+    L.circle(coordinates, {
         stroke: false,
         fillColor: signal,
-        fillOpacity: 0.2,
+        fillOpacity: 0.1,
         radius: 30
     }).addTo(map); 
 }
 
-
-
 loadCoord();
+
+setInterval(()=>{
+    display.forEach(e => {
+        displayCoord(e);
+    });
+}, 1000)
