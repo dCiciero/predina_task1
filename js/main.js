@@ -52,8 +52,10 @@ function displayCoord(coordinates) {
         stroke: false,
         fillColor: signal,
         fillOpacity: 0.2,
-        radius: 300
+        radius: 30
     }).addTo(map); 
 }
+
+
 
 loadCoord();
